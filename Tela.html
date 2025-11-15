@@ -93,7 +93,7 @@
       Inn('header .right',e.Tim_B) ; Inn('#T_B p',e.Tim_B)
       Inn('#Img_A'  ,e.Img_A ? `<img src="${BASE_URL}/${e.Img_A}?v=${Date.now()}">` : '')
       Inn('#Img_B'  ,e.Img_B ? `<img src="${BASE_URL}/${e.Img_B}?v=${Date.now()}">` : '')
-      Inn('#Tempo a',e.Tempo)
+      //Inn('#Tempo a',e.Tempo)
     
     //Trexo de Atualizações de Eventos
       const Ev_A = [{min:12,Play:"JoseMonteiro"},{min:32,Play:"Fernandinho"},{min:45,Play:"Bruno"},{min:78,Play:"Felipe"}]
@@ -120,19 +120,23 @@
 
   // RealTime deve analisar se eu estou Configurando o Jogo, Dando Pausa, Retomando, Trocando Tempo, Atualizando Placar!
   supabase.channel('placar').on('postgres_changes',{event:'*',schema:'public',table:'placar'},e=>{
-    const novo = e.new
-    const antigo = e.old
-    if (
-      (novo.Gol_A !== antigo.Gol_A && novo.Gol_A != 0) ||
-      (novo.Gol_B !== antigo.Gol_B && novo.Gol_B != 0)
-    ) {
-      Anima(novo)
+    const New = e.new
+    const Old = e.old
+    if ((New.Gol_A !== Old.Gol_A && New.Gol_A != 0) ||
+        (New.Gol_B !== Old.Gol_B && New.Gol_B != 0)
+    ){
+      Anima(New) // só animar se o evento Permitir Animação
     }else{LOG('⚙️ Jogo Reconfigurado')}
-    Exibir(novo)
+    Exibir(New)
+    // se a edição for na coluna Ev e for o botão de 
+    // Iniciar Jogo > /*RodaTempo(data)*/ (o Tempo tem que ter um Limite, que vai chegar aos 45minutos) (masi precisamente ao q o Usuário definiu) (lembrando que o usuario pode trocar em quando ta Rodando)
+    // Pausa        > interrompe a contagem, e exibe uma Animação de Intervalo
+    // Finalzar Jogo (Exibe uma Animação de Jogo finalizado, e Limpa o SB ou seja, não tem mais Registro do Jogo)
+    
   }).subscribe()
 
-  async function carregar(){let {data} = await supabase.from('placar').select('*').eq('id',1).maybeSingle() ; if(data){Exibir(data);RodaTempo(data)}}
-  carregar()
+  async function getSB(){let {data} = await supabase.from('placar').select('*').eq('id',1).maybeSingle();if(data){Exibir(data)}}
+  getSB()
 
   // Integrar o Timer Avançado
   // Adicionar um Gatilho de Resync pra o timer, caso o lado da Tela seja Reatualizado
