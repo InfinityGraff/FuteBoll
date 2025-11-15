@@ -3,10 +3,10 @@
 <head>
   <meta charset="UTF-8">
   <title>Operador - Placar</title>
-    <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
-    <link  href="https://cdn.jsdelivr.net/gh/InfinityGraff/MyBiblioteca@main/CSSBiblioteca.css" rel="stylesheet">
-    <script src="https://raw.githack.com/InfinityGraff/MyBiblioteca/main/PreScript.js"             ></script>
-    <script src="./PrescriptTeste.js"></script>
+    <link  href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
+    <link  href="./MyBiblioteca/CSSBiblioteca.css" rel="stylesheet">
+    <script src="./MyBiblioteca/PreScript.js"></script>
+    <script src="./MyBiblioteca/PrepDrop.js"></script>
 
     <script src="https://unpkg.com/@supabase/supabase-js"></script>
     <script> // Base de Dados
@@ -160,6 +160,7 @@
 
   async function Configurar(){
     if (!confirm('Deseja realmente configurar o jogo?')) return
+
     const obj = {
       Tim_A:  Vll('.T_A .Nome'),
       Tim_B:  Vll('.T_B .Nome'),
@@ -194,16 +195,24 @@
 
   function PlaceTxtArea(Eu){Eu.placeholder =  "10 - Nome\n05 - Nome\n..."}
   
+  
   Onloads('body')
+
+  function Pass(Pss){
+    let Inpt = prompt("Digite a senha para continuar:")
+    while (Inpt === null || Inpt !== Pss) {Inpt = prompt("Senha incorreta. Tente novamente:")}
+    return true
+  }
+
   async function carregar(){let {data} = await supabase.from('placar').select('*').eq('id',1).maybeSingle() ; if(data){Exibir(data)}}
-  carregar()
+  if (Pass('123')){carregar()}
+  
 </script>
 
 <script>
-  // usuario com Senha
   // Botão de Iniciar Começa a Contagem
+  // Botão de Pausa exibe na tela que está em um Intervalo
   // Corrigir a Questão das Imagens
-  // Botão de Pausa exibe na tela que está em um Intervalo () // Talvez tenha Pausa para Subistituição
   // Botão de Limpar(Dados do SB) é Fácil
   // Correção de Eventos (será um X no Histórico)
   // Deixar o Link da Tela dentro da Página do Operador
