@@ -222,7 +222,8 @@
 
   function Pass(Pss){
     let Inpt = prompt("Digite a senha para continuar:")
-    while (Inpt === null || Inpt !== Pss || Inpt !== 12) {Inpt = prompt("Senha incorreta. Tente novamente:")};return true
+    while (Inpt === null || Inpt !== Pss) {Inpt = prompt("Senha incorreta. Tente novamente:")};return true
+    // || Inpt !== 12
   }
 
   async function carregar(){
