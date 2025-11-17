@@ -238,9 +238,6 @@
         Inn($(`#histB table tbody`),e.Hist_B.map(s=>NewLinn([s.Dia,s.Hora,s.Evento,s.Minuto,s.Time,s.Ev])).join(''))
       }
     }
-
-    //Ulti.Hist_A.filter(e=>e.Minuto)
-
     if(Ulti){
       if(Ulti.Stts=='Iniciar'){Inners(Ulti);Configurar('SB')} // Importa dados e Configura!
       if(Ulti.Stts=='Ply'){Inners(Ulti);Cfgrado()}            // deixa Rodando
@@ -250,8 +247,7 @@
   }
 
   Onloads('body')
-  carregar() 
-  //if (Pass('123')){carregar()} // fazer 2 Senhas uma pra mim, uma pra os cara de lá
+  if(Pass('123')){carregar()}
   // Adicionar Histórico de Imagens
 </script>
 
