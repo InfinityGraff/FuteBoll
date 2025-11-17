@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <title>Telão - Placar</title>
-  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
-    <link  href="https://cdn.jsdelivr.net/gh/InfinityGraff/MyBiblioteca@main/CSSBiblioteca.css" rel="stylesheet">
-    <script src="https://cdn.jsdelivr.net/gh/InfinityGraff/MyBiblioteca@main/PreScript.js"      ></script>
+    <link  href="./MyBiblioteca/CSSBiblioteca.css" rel="stylesheet">
+    <script src="./MyBiblioteca/PreScript.js"></script>
+    <script src="./MyBiblioteca/PrepDrop.js" ></script>
 
     <script src="https://unpkg.com/@supabase/supabase-js"></script>
     <script> // Base de Dados
@@ -20,17 +20,16 @@
   :root{--accent:#0ea5e9;--panel:#071b33b2;--panel-2:#102a4a;--glass:#ffffff0a;--muted:#ffffffb3}
   *          {margin:0;padding:0;font-family:Montserrat,system-ui,Arial;font-weight:bold}
   html,body  {height:100%;width:100%}
-  body       {padding:3%;background-image:url(./Imgs/Fundo.webp); background-size:100% 100%;background-repeat:no-repeat;background-position:top left}
+  body       {padding:2% 3% 3% 3%;background-image:url(./Imgs/Fundo.webp); background-size:100% 100%;background-repeat:no-repeat;background-position:top left}
   .Live p    {color:#ffffff; font-size:3rem}
   .Live a    {background:red; width:15px; height:15px; margin-right:5px}
   header     {gap:12px; z-index:2} header > *{font-size:5rem}
-    .tab             {flex:1 1 0;background:linear-gradient(0deg,var(--panel),var(--panel-2));color:#fff;padding:14px 18px;text-align:center;letter-spacing:1px;position:relative;box-shadow:0 6px 18px #02061773}
-    .tab.left::before,.tab.right::after{content:'';position:absolute;top:0;width:18px;height:100%;border-radius:6px;transform:translateY(0)}
-    .tab.left::before{ left:-10px;background:linear-gradient(180deg,#ff9b2b,#ff5a5a)}
-    .tab.right::after{right:-10px;background:linear-gradient(180deg,#ff9b2b,#ff5a5a)}
+    .tab     {width: 500px;flex:1 1 0;background:linear-gradient(0deg,var(--panel),var(--panel-2));color:#fff;padding:14px 18px;text-align:center;letter-spacing:1px;position:relative;box-shadow:0 6px 18px #02061773}
+    .TxtLmt  {white-space: nowrap;overflow: hidden;text-overflow: ellipsis}
+    .tab.tA::before,.tab.tB::after{content:'';position:absolute;top:0;width:18px;height:100%;transform:translateY(0);background:linear-gradient(180deg,#ff9b2b,#ff5a5a)}
+    .tab.tA::before{left:-1px;}.tab.tB::after{right:-1px;}
 
-  .Painel    {z-index:2;height: 500px ; padding:10px 10px;background:linear-gradient(180deg,#ffffff08,#ffffff03);gap:18px;box-shadow:0 14px 30px #040c1e80;color:var(--muted);backdrop-filter:blur(6px)}
-
+  .Painel    {z-index:2; margin-top: 20px ;height: 500px ; padding:10px 10px;background:linear-gradient(180deg,#ffffff08,#ffffff03);gap:18px;box-shadow:0 14px 30px #040c1e80;color:var(--muted);backdrop-filter:blur(6px)}
   #T_A {flex:1 1 150px; order:1}.Score{order:2}#T_B {flex:1 1 150px; order:3}
 
   .box          {padding:30px 50px;transition:transform 0.2s;min-width:200px;text-align:center ; margin-bottom: 50px;}
@@ -40,60 +39,35 @@
   .box > div >p {font-size:7rem ; text-shadow:0 5px 5px #0000009c; color:#ffffff ; display: none;}
   .Score > *    {font-size:23rem; text-shadow:0 5px 5px #0000009c; color:#ffffff ; margin:0px 10px}  .vs{opacity:0.7}
   #Tempo > *    {font-size:7rem ; text-shadow:0 5px 5px #0000009c; color:#ffffff ;z-index:2 ; padding:10px 20px; display:inline-flex; align-items:center; gap:12px}
-  #Clock        {font-size:7rem ; color:#ffbb00}
+  #Tempo > a    {font-size:7rem ; color:#ffbb00}
 
   .Evn{display:none;gap:8px;font-size:14px;color:#ffffffbf;max-width:360px;margin-top:15px}
   .Evn a{display:flex;gap:10px;align-items:center}
   .Evn p{width:40px;text-align:left;color:var(--accent)}
   .Evn b{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:start}
 
-  @media (max-width:750px){
-    .Painel{flex-direction:column ; padding:30px 10px 60px 10px}
-    .box{padding:10px 10px}
-    .Evn{display:none}
-  }
-  @media (max-width:550px){
-    .Painel{padding:30px 10px 60px 10px}
-    .tab{font-size:4vw}
-    .box{padding:30px 10px}
-    .box img{width:80px;height:80px}
-    .imgFund img{width:70%}
-    .Evn{display:none}
-  }
   .gol-anim{z-index:3;position:fixed;top:0;left:0;right:0;bottom:0;background:#ffffffe6;display:flex;justify-content:center;align-items:center;font-size:80px;font-weight:900;color:#28a745;opacity:0;animation:golAnim 3s ease forwards}
   @keyframes golAnim {0%{opacity:0;transform:scale(0.5)}20%{opacity:1;transform:scale(1.3)}80%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1)}}
-
 </style>
 
-<body class="Ct Rltv">
+<body class="Cl Rltv">
   <div style="top:15px" class="Abslt Rd Live Hov Ct none"><a class="Rd"></a><p>Ao Vivo</p></div>
-  <header class="Bt"><a class="tab left Hov rd">Time A</a><p>🆚</p><a class="tab right Hov rd">Time B</a></header>
+  <header class="Bt"><a class="tab TxtLmt tA Hov rd">Time A</a><p>🆚</p><a class="tab TxtLmt tB Hov rd">Time B</a></header>
   <div class="Painel Ct w100 Rltv rd">
       <div class="box Hov Cl" id="T_A"><div class="Ct"><div id="Img_A"></div><p>Time A</p></div><div class="Evn Start2"></div></div>
       <div class="Ev Score"><a id="Gol_A">0</a><div class="vs">-</div><a id="Gol_B">0</a></div>
       <div class="box Hov Cl" id="T_B"><div class="Ct"><div id="Img_B"></div><p>Time B</p></div><div class="Evn Start2"></div></div>
-      <div id="Tempo" class="Abslt Ct"><a>1° Tempo</a> <span id="Clock">00:00</span></div>
+      <div id="Tempo" class="Abslt Ct"><p>1° Tempo</p><a>00:00</a></div>
   </div>
   <div style="bottom:15px" class="Abslt imgFund"><img src="./Imgs/Campo.webp"></div>
 </body>
 
 <script>
-  let Crono,Ini=0,Seg=0
-  const Rodando=['1º Tempo','1° Tempo','2º Tempo','Prorrogação','Acréscimos']
-  function RodaTempo(e){const s=e.TimeSeconds??e.time_seconds??e.seconds??0 ; Rodando.includes(e.Tempo)?Play(s):Stop(1)}
-  
-  const Fmt=s=>`${(s/60|0).toString().padStart(2,'0')}:${(s%60|0).toString().padStart(2,'0')}`
-  const Tic=()=>Inn('#Clock',Fmt(Seg+((Date.now()-Ini)/1000|0)))
-  const Play=s=>(Stop(),Seg=+s||0,Ini=Date.now(),Crono=setInterval(Tic,250),Tic())
-  const Stop=r=>(clearInterval(Crono),r||Inn('#Clock',Fmt(Seg)))
-
   const Exibir=e=>{
     //Trexo da Configuração do JOGO
-      Inn('header .left' ,e.Tim_A) ; Inn('#T_A p',e.Tim_A)
-      Inn('header .right',e.Tim_B) ; Inn('#T_B p',e.Tim_B)
-      Inn('#Img_A'  ,e.Img_A ? `<img src="${BASE_URL}/${e.Img_A}?v=${Date.now()}">` : '')
-      Inn('#Img_B'  ,e.Img_B ? `<img src="${BASE_URL}/${e.Img_B}?v=${Date.now()}">` : '')
-      //Inn('#Tempo a',e.Tempo)
+      Inn('header .tA' ,e.Tim_A) ; Inn('#T_A p',e.Tim_A) ; Inn('#Img_A',e.Img_A ? `<img src="${BASE_URL}/${e.Img_A}?v=${Date.now()}">` : '')
+      Inn('header .tB',e.Tim_B) ; Inn('#T_B p',e.Tim_B) ; Inn('#Img_B',e.Img_B ? `<img src="${BASE_URL}/${e.Img_B}?v=${Date.now()}">` : '')
+      Inn('#Tempo p',e.Tempo) ; Inn('#Tempo p',e.Tempo)
     
     //Trexo de Atualizações de Eventos
       const Ev_A = [{min:12,Play:"JoseMonteiro"},{min:32,Play:"Fernandinho"},{min:45,Play:"Bruno"},{min:78,Play:"Felipe"}]
@@ -104,43 +78,35 @@
 
   function Anima(e){
       const Stg = {
-        Gol:e=>`⚽️ GOOOOL DO ${AA(e)}!`,
-     '-Gol':e=>`❌⚽ Gol Impedido do ${e}`,
-        Amr:e=>`🟨 Cartão Amarelo do ${e}`,
-        Red:e=>`🟥 Cartão Vermelho do ${e}`,
-        Flt:e=>`❌ Falta do ${e}`,
-        Sub:e=>`🔄 Subistituição do ${e}`
+        Gol:e=>`⚽️ GOOOOL          <br> DO ${AA(e)}!`,
+     '-Gol':e=>`❌⚽ Gol Impedido <br> do ${e}`,
+        Amr:e=>`🟨 Cartão Amarelo  <br> do ${e}`,
+        Red:e=>`🟥 Cartão Vermelho <br> do ${e}`,
+        Flt:e=>`❌ Falta           <br> do ${e}`,
+        Sub:e=>`🔄 Subistituição   <br> do ${e}`,
+        Cnf:e=>`Aguardando`,
+        Ply:e=>`Jogo Iniciado`,
+        Stp:e=>`Intervalo`,
+        End:e=>`Jogo Encerrado`,
       }
+      if(!Stg[e.Ev[0]]){return} // não fazer nada caso não exista aqui Dentro!
       const d=NewTag('div')
       d.className='gol-anim'
-      d.textContent=Stg[e.Ev[0]](e[`Tim_${e.Ev[1]}`])
+      d.innerHTML=Stg[e.Ev[0]](e[`Tim_${e.Ev[1]}`])
       document.body.appendChild(d)
       setTimeout(()=>d.remove(),3000)
   }
 
-  // RealTime deve analisar se eu estou Configurando o Jogo, Dando Pausa, Retomando, Trocando Tempo, Atualizando Placar!
   supabase.channel('placar').on('postgres_changes',{event:'*',schema:'public',table:'placar'},e=>{
     const New = e.new
-    const Old = e.old
-    if ((New.Gol_A !== Old.Gol_A && New.Gol_A != 0) ||
-        (New.Gol_B !== Old.Gol_B && New.Gol_B != 0)
-    ){
-      Anima(New) // só animar se o evento Permitir Animação
-    }else{LOG('⚙️ Jogo Reconfigurado')}
-    Exibir(New)
-    // se a edição for na coluna Ev e for o botão de 
-    // Iniciar Jogo > /*RodaTempo(data)*/ (o Tempo tem que ter um Limite, que vai chegar aos 45minutos) (masi precisamente ao q o Usuário definiu) (lembrando que o usuario pode trocar em quando ta Rodando)
-    // Pausa        > interrompe a contagem, e exibe uma Animação de Intervalo
-    // Finalzar Jogo (Exibe uma Animação de Jogo finalizado, e Limpa o SB ou seja, não tem mais Registro do Jogo)
-    
-  }).subscribe()
+    Anima(New) ; Exibir(New)
 
+    if(New.Ev[0]=='Ply'){Timer($('#Tempo a'),'play',ToSec(New.Ev[1]),false,e=>{CallBack(New)})}
+    if(New.Ev[0]=='Stp'){Timer($('#Tempo a'),'play',ToSec(New.Ev[1]),false,e=>{CallBack(New)})}
+    if(New.Ev[0]=='End'){Timer($('#Tempo a'),'end' ,ToSec(New.Ev[1]),false,e=>{CallBack(New)})}
+  }).subscribe()
+  function CallBack(e){LOG('Callnack',e)}  
   async function getSB(){let {data} = await supabase.from('placar').select('*').eq('id',1).maybeSingle();if(data){Exibir(data)}}
   getSB()
-
-  // Integrar o Timer Avançado
-  // Adicionar um Gatilho de Resync pra o timer, caso o lado da Tela seja Reatualizado
-  // Separar Configuração de Jogo, de atualizações (cada uma Faz uma coisa Diferente)
 </script>
-
 </html>

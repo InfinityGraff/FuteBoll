@@ -12,7 +12,7 @@
     <script> // Base de Dados
       const SUPABASE_URL      = "https://adxigvfxtafvlmpvwwvb.supabase.co"
       const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFkeGlndmZ4dGFmdmxtcHZ3d3ZiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE1Njc1NTEsImV4cCI6MjA2NzE0MzU1MX0.wc90qDuSNhtolJBd4qLEux3xCwJwPuTTFb3gZMKUBYU"
-      const supabase          =  window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
+      const supabase          =  window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY)
       const BASE_URL          = `https://adxigvfxtafvlmpvwwvb.supabase.co/storage/v1/object/public/Jogo/Imgs`
     </script>
 </head>
@@ -20,8 +20,9 @@
 <style>
   *     {margin:0;padding:0;font-family:Montserrat,Arial}
   body  {background:#f0f2f5;color:#333;padding:20px}
-  h1    {font-size:2.5rem;margin-bottom:30px;color:#636363 ; font-weight:700;font-family:Montserrat,Arial}
+  h1    {font-size:2.5rem;margin-bottom:20px;color:#636363 ; font-weight:700;font-family:Montserrat,Arial}
   .Times{display:flex ; align-items:start; gap:12px; margin: 10px;}
+  #Tela{top: 20px; right: 30px; width: 20px; height: 20px;}
 
   label {display:block; font-weight:bold}
   input,select             {width:200px; padding:10px; border-radius:8px; border:1px solid #ccc; font-size:1rem; transition:border 0.2s, box-shadow 0.2s; }
@@ -29,7 +30,7 @@
 
   input[type="checkbox"],input[type="radio"]{width: auto}
   button      {padding:8px 10px;font-size:1.2rem; color:#fff; border:none; border-radius:8px; cursor:pointer; font-weight:700}
-  .Drop       { border:2px dashed #a1c2d8; border-radius:10px; text-align:center; background:#ffffff1a; cursor:pointer; position:relative; overflow:hidden;   min-height:60px}
+  .Drop       { border:2px dashed #a1c2d8; border-radius:10px; text-align:center; background:#ffffff1a; cursor:pointer; position:relative; overflow:hidden;  -height:60px}
   .Drop:hover { background:#63a6dd33}.Drop.hover { background:#63a6dd33}
   .Drop img   { width:auto ; height:80px; border-radius:10px}
   
@@ -50,8 +51,11 @@
   .C_-Gol      {background:#c82333}
 
   .Gols{font-size:80px;font-weight:900;color:#007bff}
-  .hist{width:100%;border-top:1px solid #ddd;margin-top:5px;padding-top:5px;font-size:13px;text-align:left;overflow-y:auto;height: 0px;opacity: 0;transition: all 0.4s ease}
+  .hist{width:100%;border-top:1px solid #ddd;margin-top:5px;padding-top:5px;font-size:13px;text-align:left;overflow-y:scroll;height: 0px;opacity: 0;transition: all 0.4s ease}
   .hist.Atv{height:150px;opacity: 1;}
+  .hist table{width:100%;}
+  .hist table td {cursor:default}
+  .hist table :is(td,th):nth-child(6){display:none}
   
   textarea{width:100%;height:139px;resize:none;border:1.5px solid #ccc;border-radius:8px;outline:none;resize:vertical;font-size:14px;line-height:1.4;color:#333;background:#fafafa;box-shadow:0 1px 3px #4a91e21f;transition:all 0.25s ease;text-align:left;overflow-y:auto;}
   textarea:focus{border-color:#4a90e2;background:#fff;box-shadow:0 0 0 3px #4a91e248;}
@@ -61,14 +65,30 @@
   .MyAlert{background:#28a745;color:#fff;padding:12px 20px;border-radius:8px;box-shadow:0 4px 12px #0000004d}
 </style>
 
+<script> // Base
+  const Tempos = {"1º Tempo":"45:00","2º Tempo":"45:00","Prorrogação":"30:00","Acréscimos":"05:00","Pênaltis":"00:00","Encerrado":"00:00"};
+  const DbrevJogo={
+        Gol:`⚽️ Gol`,
+     '-Gol':`❌⚽ Gol Impedido `,
+        Amr:`🟨 Cartão Amarelo`,
+        Red:`🟥 Cartão Vermelho `,
+        Flt:`❌ Falta`,
+        Sub:`🔄 Subistituição`,
+        Cnf:`Aguardando`,
+        Ply:`Jogo Iniciado`,
+        Stp:`Intervalo`,
+        End:`Jogo Encerrado`,
+  }
+  const histo = ['Dia','Hora','Evento','Minuto','Time','Ev']
+</script>
+
 <body class="Cl">
-  <h1>Operador do Placar</h1>
+  <h1>Operador do Placar</h1> <a href="file:///C:/Users/allan/Documents/GitHub/FuteBoll/Tela.html" target="_blank"><img id="Tela" class="Abslt" src="./Imgs/Tela.png"></a>
 
   <div class="Ct">Nomes de Jogadores:
     <label><input class="Player" type="radio" name="jogadores" value="S" onchange="ATVtrue($$('header'),this.value=='S')">Sim</label>
     <label><input class="Player" type="radio" name="jogadores" value="N" onchange="ATVtrue($$('header'),this.value=='S')">Não</label>
   </div>
-
   <div class="Ct">Histórico de Eventos:
     <label><input class="Events" type="radio" name="eventos" value="S" onchange="ATVtrue($$('.hist' ),this.value=='S')">Sim</label>
     <label><input class="Events" type="radio" name="eventos" value="N" onchange="ATVtrue($$('.hist' ),this.value=='S')">Não</label>
@@ -77,7 +97,7 @@
   <div class="w100 Times">
     <div class="Cl T_A rd">
       <header class="Ct">
-        <div class="Plyr Cl"><textarea spellcheck="false" onload="PlaceTxtArea(this)"></textarea></div>
+        <div class="Plyr Cl"><textarea spellcheck="false" onload="TxtArea(this)"></textarea></div>
         <div class="inpt Cl">
           <div class="Drop Ct" onload="PrepDrop(this,'Time_A')"></div>
           <label>Time A:</label><input class="Nome" placeholder="Nome do Time A...">
@@ -85,7 +105,7 @@
         <div class="Gols">0</div>
       </header>
       <div class="botoes Ct" onload="LoadBtns('A',this)"></div>
-      <div class="hist" id="histA">Histórico de Eventos</div>
+      <div class="hist" id="histA"><div>Histórico de Eventos</div><table onload="TblHist(this)"></table></div>
     </div>
 
     <div class="Cl T_B rd">
@@ -95,29 +115,38 @@
           <div class="Drop Ct" onload="PrepDrop(this,'Time_B')"></div>
           <label>Time B:</label><input class="Nome" placeholder="Nome do Time B...">
         </div>
-        <div class="Plyr Cl"><textarea spellcheck="false" onload="PlaceTxtArea(this)"></textarea></div>
+        <div class="Plyr Cl"><textarea spellcheck="false" onload="TxtArea(this)"></textarea></div>
       </header>
       <div class="botoes Ct" onload="LoadBtns('B',this)"></div>
-      <div class="hist" id="histB">Histórico de Eventos</div>
+      <div class="hist" id="histB"><div>Histórico de Eventos</div><table onload="TblHist(this)"></table></div>
     </div>
   </div>
 
   <div id="Config"><button class="C_Out Disab" onclick="Requered()">Configurar Jogo 🔒</button></div>
 
   <div class="Ct DivTime">
-    <div class="Start2"><label>Tempo:  </label><select id="Tempo"></select><script>load_Opts($('#Tempo'),["1º Tempo","2º Tempo","Prorrogação","Acréscimos","Pênaltis","Encerrado"])</script></div>
-    <div class="Start2"><label>Minutos:</label><input type="number"></div>
+    <div class="Start2"><label>Tempo:  </label><select id="Tempo" onchange="ReadMin(this)"></select><script>load_Opts($('#Tempo'),["1º Tempo","2º Tempo","Prorrogação","Acréscimos","Pênaltis","Encerrado"])</script></div>
+    <div class="Start2"><label>Minutos:</label><input id="Minutos" placeholder="00:00" maxlength="5" oninput="MaskMin(this);AlteraTime(true)" value="45:00"></div>
+    <button id="ReadMiiin" class="Blu none" style="margin-left: 7px;" onclick="AlteraTime(false)">Altera Tempo</button>
   </div>
+
   <div class="DivStars Ct">
-    <button class="C_Gol Hov" onclick="Atualizar()">Iniciar Jogo       </button>
-    <button class="C_Amr Hov" onclick="Atualizar()">Pausa              </button>
-    <button class="C_Red Hov" onclick="Atualizar()">Finalizar Jogo     </button>
+    <div id="Timer"><p>1° Tempo</p><a>01:00</a></div>
+    <button id="BtnPlay" class="C_Gol Hov"      onclick="BtnPlays(Timer($('#Timer a'),'play',300))">Iniciar Jogo </button>
+    <button id="BtnEnd"  class="C_Red Hov none" onclick="BtnPlays(Timer($('#Timer a'),'end' ,300))">Encerrar Jogo</button>
+    <script>
+      const BtnPlays=r=>{
+        if(!r) return
+        if(r.acao==='play' ){Inn(BtnPlay,'Pausar' ) ; Trc(BtnPlay,'C_Amr','C_Gol') ; Rmv_N(BtnEnd) ; AddEvento('','Ply','Ply') ; ATV($$('.botoes'))}
+        if(r.acao==='pause'){Inn(BtnPlay,'Retomar') ; Trc(BtnPlay,'C_Gol','C_Amr') ; Rmv_N(BtnEnd) ; AddEvento('','Stp','Stp') ; DTV($$('.botoes'))}
+        if(r.acao==='end'  ){Inn(BtnPlay,'Iniciar') ; Trc(BtnPlay,'C_Gol','C_Amr') ; Add_N(BtnEnd) ; AddEvento('','End','End') ; DTV($$('.botoes'))}
+      }
+    </script>
   </div>
 </body>
 
 <script> // Campos Obrigatórios
   let Requireds = false
-
   document.oninput=()=>{
     const btn = $('#Config')
     const valJog = $('input[name="jogadores"]:checked')?.value
@@ -137,18 +166,18 @@
 </script>
 
 <script>
+  let Zerado = false
   let Placar = {A:0,B:0}
+  const ReadMin=Eu=>Vll(Minutos,Tempos[Vll(Eu)])
+  const TblHist=Eu=>Inn(Eu,`<thead><tr>${histo.map(e=>`<th>${e}</th>`).join('')}<th>-</th></tr></thead><tbody></tbody>`)
+  const TxtArea=Eu=>Eu.placeholder =  "10 - Nome\n05 - Nome\n..."
+  const NewLinn=Ar=>`<tr>${Ar.map(e=>`<td class="noslt">${e}</td>`).join('')}<td class="PT" onclick="_tr(this).remove()">❌</td></tr>`
+  const CnvHist=AB=>$$(`#hist${AB} table tbody tr`).map(tr=>histo.reduce((o,k,x)=>(o[k]=$$('td',tr)[x]?.textContent.trim()||'',o),{}))
+  const Cfgrado=()=>ATV($$('.DivStars,.DivTime')) ; Inn($('#Config button'),'Reconfigurar Jogo 🔄')
 
   function LoadBtns(AB,Eu){
     const Typ=[{t:"Gol",l:"Gol"},{t:"-Gol",l:"-Gol"},{t:"Amr",l:"Amarelo"},{t:"Red",l:"Vermelho"},{t:"Flt",l:"Falta"},{t:"Sub",l:"Substituição"}]
-    Inn(Eu,Typ.map(b=>`<button class="C_${b.t} Hov" onclick="AddEvento('${AB}','${b.t}',this)">${b.l}</button>`).join(''))
-  }
-
-  const Exibir=e=>{ //Veio do SUPABASE
-      $('.T_A .Nome').value = e.Tim_A
-      $('.T_B .Nome').value = e.Tim_B
-      Inn($('.T_A .Drop a'),`<img src="${BASE_URL}/${e.Img_A}?v=${Date.now()}" name="${e.Img_A}">`) // Inseir Imagem
-      Inn($('.T_B .Drop a'),`<img src="${BASE_URL}/${e.Img_B}?v=${Date.now()}" name="${e.Img_B}">`) // Inseir Imagem
+    Inn(Eu,Typ.map(b=>`<button class="C_${b.t} Hov" onclick="AddEvento('${AB}','${b.t}')">${b.l}</button>`).join(''))
   }
 
   async function UPPImg(file,nome){ // Supabase
@@ -158,66 +187,83 @@
     return supabase.storage.from('Jogo').getPublicUrl(path).publicUrl
   }
 
-  async function Configurar(){
-    if (!confirm('Deseja realmente configurar o jogo?')) return
-
+  async function Configurar(SB){
+    if(!SB){if (!confirm('Deseja realmente configurar o jogo?')) return}
     const obj = {
-      Tim_A:  Vll('.T_A .Nome'),
-      Tim_B:  Vll('.T_B .Nome'),
-      Gol_A: +Inn('.T_A .Gols'),
-      Gol_B: +Inn('.T_B .Gols'),
-      Tempo:  Vll('#Tempo'    ),
-      Img_A:  Nm($('.T_A img')),
-      Img_B:  Nm($('.T_B img')),
+      Tim_A:   Vll('.T_A .Nome'),Tim_B:   Vll('.T_B .Nome'),
+      Gol_A:  +Inn('.T_A .Gols'),Gol_B:  +Inn('.T_B .Gols'),
+      Img_A:  Nm($('.T_A img') ),Img_B:  Nm($('.T_B img') ),
+      Tempo:  Vll('#Tempo'),Ev:['Cnf'],Stts:'Iniciar'
     }
     const NomeA = Nm($('.T_A .Drop img')) ; const F_A = VarDropImg[Nm($('.T_A .Drop img'))] // Pega o Arquivo Files
     const NomeB = Nm($('.T_B .Drop img')) ; const F_B = VarDropImg[Nm($('.T_B .Drop img'))] // Pega o Arquivo Files
-    UPPImg(F_A,NomeA) ; UPPImg(F_B,NomeB)
-    LOG('Foi Upado',NomeA,NomeB)
-    const {error}=await supabase.from('placar').update(obj).eq('id',1)
-    if(error){console.error(error)}
-    else{MyAlert('✅ Jogo Configurado!') ; ATV($$('.botoes,.DivStars,.DivTime')) ; Inn($('#Config button'),'Reconfigurar Jogo 🔄')}
+    UPPImg(F_A,NomeA) ; UPPImg(F_B,NomeB) ; LOG('Imagens Foram Upado',NomeA,NomeB)
+    
+    LOG(Zerado)
+    if(Zerado){
+      const {data,error}=await supabase.from('placar').insert([obj]).select().maybeSingle()
+      if(error) ERR(error)
+      else MyAlert('✅ Jogo Configurado!'), console.log('Nova linha:',data)
+    }else{
+      let {data:Ultima,error}=await supabase.from('placar').select('*').order('id',{ascending:false}).limit(1).maybeSingle()
+      if(error) return ERR(error)
+      if(!Ultima) return ERR('Nenhuma linha encontrada')
+      const {error:updateErr}=await supabase.from('placar').update(obj).eq('id',Ultima.id)
+      if(updateErr) return ERR(updateErr)
+      MyAlert('✅ Jogo Configurado!'); console.log('Linha atualizada:',Ultima)
+    }
+    Cfgrado()
   }
 
-  async function Atualizar(obj){
-    const {error}=await supabase.from('placar').update(obj).eq('id',1)
-    if(error){console.error(error)}
-    else{MyAlert('✅ Placar Atualizado!')}
-  }
-
-  function AddEvento(AB,ev){
-    $(`#hist${AB}`).innerHTML+=`<div>${AGORA()} - ${ev}</div>`
+  async function AddEvento(AB,ev,Stts){
+    const AddHist=(ab)=>$(`#hist${ab} table`).innerHTML+=NewLinn([HOJE(),AGORA2(),DbrevJogo[ev],Inn($('#Timer a')),AB==''?'-':Vll($(`.T_${ab} .Nome`)),ev])
+    if(AB==''){AddHist('A');AddHist('B')}else{AddHist(AB)}
     if(ev=='Gol' ){Placar[AB]++ ; Inn($(`.T_${AB} .Gols`),Placar[AB])}
     if(ev=='-Gol'){Placar[AB]-- ; Inn($(`.T_${AB} .Gols`),Placar[AB])}
-    const obj = {Gol_A:+Inn('.T_A .Gols'),Gol_B:+Inn('.T_B .Gols'),Ev:[ev,AB]}
-    Atualizar(obj)
+    const obj = {Gol_A:+Inn('.T_A .Gols'),Gol_B:+Inn('.T_B .Gols'),Tempo:Vll('#Tempo'),Ev:[ev,AB],Hist_A:CnvHist('A'),Hist_B:CnvHist('B'),...(Stts!==undefined && {Stts})}
+    const {error} = await supabase.from('placar').update(obj).eq('id',1);if(error){ERR(error)}else{MyAlert('✅ Placar Atualizado!')}
   }
-
-  function PlaceTxtArea(Eu){Eu.placeholder =  "10 - Nome\n05 - Nome\n..."}
   
-  
-  Onloads('body')
+  function AlteraTime(Tipo){
+    if(Tipo){Inn(ReadMiiin,"Altera Tempo");Rmv_N(ReadMiiin)}
+    else{Inn(ReadMiiin,"Tempo Atualizado");setTimeout(()=>Add_N(ReadMiiin),1000)}
+    AddEvento('','ReadTempo')
+  }
 
   function Pass(Pss){
     let Inpt = prompt("Digite a senha para continuar:")
-    while (Inpt === null || Inpt !== Pss) {Inpt = prompt("Senha incorreta. Tente novamente:")}
-    return true
+    while (Inpt === null || Inpt !== Pss || Inpt !== 12) {Inpt = prompt("Senha incorreta. Tente novamente:")};return true
   }
 
-  async function carregar(){let {data} = await supabase.from('placar').select('*').eq('id',1).maybeSingle() ; if(data){Exibir(data)}}
-  if (Pass('123')){carregar()}
-  
+  async function carregar(){
+    let {data:Ulti,error} = await supabase.from('placar').select('*').order('id',{ascending:false}).limit(1).maybeSingle()
+    if(error){ERR("Erro ao buscar último registro:", error)}
+
+    const GetSB=e=>{ //Veio do SUPABASE
+      Vll($('.T_A .Nome'),e.Tim_A) ; Vll($('.T_B .Nome'),e.Tim_B)
+      Inn($('.T_A .Gols'),e.Gol_A) ; Inn($('.T_B .Gols'),e.Gol_B)
+      Placar.A=e.Gol_A ; Placar.B=e.Gol_B
+      Inn($('.T_A .Drop a'),`<img src="${BASE_URL}/${e.Img_A}?v=${Date.now()}" name="${e.Img_A}">`) // Inseir Imagem
+      Inn($('.T_B .Drop a'),`<img src="${BASE_URL}/${e.Img_B}?v=${Date.now()}" name="${e.Img_B}">`) // Inseir Imagem
+      if(!e.Hist_A || !e.Hist_B){return}else{
+        Inn($(`#histA table tbody`),e.Hist_A.map(s=>NewLinn([s.Dia,s.Hora,s.Evento,s.Minuto,s.Time,s.Ev])).join(''))
+        Inn($(`#histB table tbody`),e.Hist_B.map(s=>NewLinn([s.Dia,s.Hora,s.Evento,s.Minuto,s.Time,s.Ev])).join(''))
+      }
+    }
+
+    Ulti.Hist_A.filter(e=>e.Minuto)
+
+    if(Ulti){
+      if(Ulti.Stts=='Iniciar'){GetSB(Ulti);Configurar('SB')} // Importa dados e Configura!
+      if(Ulti.Stts=='Ply'){GetSB(Ulti);Cfgrado()}            // deixa Rodando
+      if(Ulti.Stts=='Stp'){GetSB(Ulti);Cfgrado()}            // deixa em Pausa
+      if(Ulti.Stts=='End'){Zerado=true}                      // Prepara-se pra Inserir Nova Linha
+    }
+  }
+  Onloads('body')
+  carregar() 
+  //if (Pass('123')){carregar()} // fazer 2 Senhas uma pra mim, uma pra os cara de lá
+  // Adicionar Histórico de Imagens
 </script>
 
-<script>
-  // Botão de Iniciar Começa a Contagem
-  // Botão de Pausa exibe na tela que está em um Intervalo
-  // Correção de Eventos (será um X no Histórico)
-  
-  // Corrigir a Questão das Imagens
-  // Botão de Limpar(Dados do SB) é Fácil
-  // Deixar o Link da Tela dentro da Página do Operador
-  // Adicionar o Histórico na Tora, apenas pra mim, no SupaBase
-  // descobrir como mascarar minhas Credenciais
-</script>
 </html>
