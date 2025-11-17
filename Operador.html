@@ -15,6 +15,7 @@
       const supabase          =  window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY)
       const BASE_URL          = `https://adxigvfxtafvlmpvwwvb.supabase.co/storage/v1/object/public/Jogo/Imgs`
     </script>
+    <script src="./SupaBASE.js"></script>
 </head>
 
 <style>
@@ -131,15 +132,16 @@
   </div>
 
   <div class="DivStars Ct">
-    <div id="Timer"><p>1° Tempo</p><a>01:00</a></div>
-    <button id="BtnPlay" class="C_Gol Hov"      onclick="BtnPlays(Timer($('#Timer a'),'play',300))">Iniciar Jogo </button>
-    <button id="BtnEnd"  class="C_Red Hov none" onclick="BtnPlays(Timer($('#Timer a'),'end' ,300))">Encerrar Jogo</button>
+    <div id="Timer"><p>1° Tempo</p><a>00:00</a></div>
+    <button id="BtnPly" class="C_Gol Hov"      onclick="BtnPlays(Timer($('#Timer a'),'Ply',45*60))">Iniciar Jogo </button>
+    <button id="BtnStp" class="C_Amr Hov none" onclick="BtnPlays(Timer($('#Timer a'),'Stp',45*60))">Pausa </button>
+    <button id="BtnEnd" class="C_Red Hov none" onclick="BtnPlays(Timer($('#Timer a'),'End',45*60))">Encerrar Jogo</button>
     <script>
       const BtnPlays=r=>{
         if(!r) return
-        if(r.acao==='play' ){Inn(BtnPlay,'Pausar' ) ; Trc(BtnPlay,'C_Amr','C_Gol') ; Rmv_N(BtnEnd) ; AddEvento('','Ply','Ply') ; ATV($$('.botoes'))}
-        if(r.acao==='pause'){Inn(BtnPlay,'Retomar') ; Trc(BtnPlay,'C_Gol','C_Amr') ; Rmv_N(BtnEnd) ; AddEvento('','Stp','Stp') ; DTV($$('.botoes'))}
-        if(r.acao==='end'  ){Inn(BtnPlay,'Iniciar') ; Trc(BtnPlay,'C_Gol','C_Amr') ; Add_N(BtnEnd) ; AddEvento('','End','End') ; DTV($$('.botoes'))}
+        if(r.acao==='Ply'){Inn(BtnPly,'Iniciar Jogo') ; None(BtnPly,[BtnStp,BtnEnd]) ; AddEvento('','Ply','Ply') ; ATV($$('.botoes'))}
+        if(r.acao==='Stp'){Inn(BtnPly,'Continuar Jogo') ; None(BtnStp,[BtnPly,BtnEnd]) ; AddEvento('','Stp','Stp') ; DTV($$('.botoes'))}
+        if(r.acao==='End'){Inn(BtnPly,'Iniciar Jogo') ; None([BtnEnd,BtnStp],BtnPly) ; AddEvento('','End','End') ; DTV($$('.botoes'))}
       }
     </script>
   </div>
@@ -198,20 +200,7 @@
     const NomeA = Nm($('.T_A .Drop img')) ; const F_A = VarDropImg[Nm($('.T_A .Drop img'))] // Pega o Arquivo Files
     const NomeB = Nm($('.T_B .Drop img')) ; const F_B = VarDropImg[Nm($('.T_B .Drop img'))] // Pega o Arquivo Files
     UPPImg(F_A,NomeA) ; UPPImg(F_B,NomeB) ; LOG('Imagens Foram Upado',NomeA,NomeB)
-    
-    LOG(Zerado)
-    if(Zerado){
-      const {data,error}=await supabase.from('placar').insert([obj]).select().maybeSingle()
-      if(error) ERR(error)
-      else MyAlert('✅ Jogo Configurado!'), console.log('Nova linha:',data)
-    }else{
-      let {data:Ultima,error}=await supabase.from('placar').select('*').order('id',{ascending:false}).limit(1).maybeSingle()
-      if(error) return ERR(error)
-      if(!Ultima) return ERR('Nenhuma linha encontrada')
-      const {error:updateErr}=await supabase.from('placar').update(obj).eq('id',Ultima.id)
-      if(updateErr) return ERR(updateErr)
-      MyAlert('✅ Jogo Configurado!'); console.log('Linha atualizada:',Ultima)
-    }
+    if(Zerado){NewLinSB(obj,'✅ Jogo Configurado!')}else{EditLrSB(obj,'✅ Jogo Configurado!')}
     Cfgrado()
   }
 
@@ -220,8 +209,9 @@
     if(AB==''){AddHist('A');AddHist('B')}else{AddHist(AB)}
     if(ev=='Gol' ){Placar[AB]++ ; Inn($(`.T_${AB} .Gols`),Placar[AB])}
     if(ev=='-Gol'){Placar[AB]-- ; Inn($(`.T_${AB} .Gols`),Placar[AB])}
-    const obj = {Gol_A:+Inn('.T_A .Gols'),Gol_B:+Inn('.T_B .Gols'),Tempo:Vll('#Tempo'),Ev:[ev,AB],Hist_A:CnvHist('A'),Hist_B:CnvHist('B'),...(Stts!==undefined && {Stts})}
-    const {error} = await supabase.from('placar').update(obj).eq('id',1);if(error){ERR(error)}else{MyAlert('✅ Placar Atualizado!')}
+    const even = AB==''? Vll($('#Minutos')) : AB // Inn($('#Timer a'))
+    const obj = {Gol_A:+Inn('.T_A .Gols'),Gol_B:+Inn('.T_B .Gols'),Tempo:Vll('#Tempo'),Ev:[ev,even],Hist_A:CnvHist('A'),Hist_B:CnvHist('B'),...(Stts!==undefined && {Stts})}
+    EditLrSB(obj,'✅ Placar Atualizado!')
   }
   
   function AlteraTime(Tipo){
@@ -236,10 +226,8 @@
   }
 
   async function carregar(){
-    let {data:Ulti,error} = await supabase.from('placar').select('*').order('id',{ascending:false}).limit(1).maybeSingle()
-    if(error){ERR("Erro ao buscar último registro:", error)}
-
-    const GetSB=e=>{ //Veio do SUPABASE
+    let Ulti = await GetSB()
+    const Inners=e=>{ //Veio do SUPABASE
       Vll($('.T_A .Nome'),e.Tim_A) ; Vll($('.T_B .Nome'),e.Tim_B)
       Inn($('.T_A .Gols'),e.Gol_A) ; Inn($('.T_B .Gols'),e.Gol_B)
       Placar.A=e.Gol_A ; Placar.B=e.Gol_B
@@ -251,15 +239,16 @@
       }
     }
 
-    Ulti.Hist_A.filter(e=>e.Minuto)
+    //Ulti.Hist_A.filter(e=>e.Minuto)
 
     if(Ulti){
-      if(Ulti.Stts=='Iniciar'){GetSB(Ulti);Configurar('SB')} // Importa dados e Configura!
-      if(Ulti.Stts=='Ply'){GetSB(Ulti);Cfgrado()}            // deixa Rodando
-      if(Ulti.Stts=='Stp'){GetSB(Ulti);Cfgrado()}            // deixa em Pausa
-      if(Ulti.Stts=='End'){Zerado=true}                      // Prepara-se pra Inserir Nova Linha
+      if(Ulti.Stts=='Iniciar'){Inners(Ulti);Configurar('SB')} // Importa dados e Configura!
+      if(Ulti.Stts=='Ply'){Inners(Ulti);Cfgrado()}            // deixa Rodando
+      if(Ulti.Stts=='Stp'){Inners(Ulti);Cfgrado()}            // deixa em Pausa
+      if(Ulti.Stts=='End'){Zerado=true}                       // Prepara-se pra Inserir Nova Linha
     }
   }
+
   Onloads('body')
   carregar() 
   //if (Pass('123')){carregar()} // fazer 2 Senhas uma pra mim, uma pra os cara de lá

@@ -14,6 +14,7 @@
       const supabase          =  window.supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY)
       const BASE_URL          = `https://adxigvfxtafvlmpvwwvb.supabase.co/storage/v1/object/public/Jogo/Imgs`
     </script>
+    <script src="./SupaBASE.js"></script>
 </head>
 
 <style>
@@ -63,12 +64,30 @@
 </body>
 
 <script>
-  const Exibir=e=>{
+  function Pegaai(e){
+    const H = e.Hist_A.filter(x=>x.Ev=='Ply'||x.Ev=='Stp')
+    if(!H.length){return '00:00'}
+    const L = H.at(-1)
+    if(L.Ev=='Stp'){return L.Minuto}
+    if(L.Ev=='Ply'){    
+      const F=s=>`${(s/60|0).toString().padStart(2,'0')}:${(s%60).toString().padStart(2,'0')}`
+      const Diff = new Date() - new Date(`${YMD(L.Dia)}T${L.Hora}`)
+      const Dif = ((Diff) / 1e3)|0
+      LOG(Dif)
+      Inn($('#Tempo a'),F(Dif))
+      Timer($('#Tempo a'),'Ply',Dif,false,e=>{CallBack('New')})
+    }
+    //return F(Dif)
+  }
+
+
+  const Exibir=(e,First)=>{
+    if(e.Stts=='End'){return}
     //Trexo da Configuração do JOGO
-      Inn('header .tA' ,e.Tim_A) ; Inn('#T_A p',e.Tim_A) ; Inn('#Img_A',e.Img_A ? `<img src="${BASE_URL}/${e.Img_A}?v=${Date.now()}">` : '')
-      Inn('header .tB',e.Tim_B) ; Inn('#T_B p',e.Tim_B) ; Inn('#Img_B',e.Img_B ? `<img src="${BASE_URL}/${e.Img_B}?v=${Date.now()}">` : '')
-      Inn('#Tempo p',e.Tempo) ; Inn('#Tempo p',e.Tempo)
-    
+      Inn('header .tA',e.Tim_A) ; Inn('#T_A p',e.Tim_A) ; Inn('#Img_A',e.Img_A ?`<img src="${BASE_URL}/${e.Img_A}?v=${Date.now()}">`:'')
+      Inn('header .tB',e.Tim_B) ; Inn('#T_B p',e.Tim_B) ; Inn('#Img_B',e.Img_B ?`<img src="${BASE_URL}/${e.Img_B}?v=${Date.now()}">`:'')
+      Inn('#Tempo   p',e.Tempo) ; if(First=='First'){Inn('#Tempo a',Pegaai(e))}
+      
     //Trexo de Atualizações de Eventos
       const Ev_A = [{min:12,Play:"JoseMonteiro"},{min:32,Play:"Fernandinho"},{min:45,Play:"Bruno"},{min:78,Play:"Felipe"}]
       const Ev_B = [{min:12,Play:"JoseMonteiro"},{min:32,Play:"Fernandinho"},{min:45,Play:"Bruno"},{min:78,Play:"Felipe"}] 
@@ -100,13 +119,15 @@
   supabase.channel('placar').on('postgres_changes',{event:'*',schema:'public',table:'placar'},e=>{
     const New = e.new
     Anima(New) ; Exibir(New)
-
-    if(New.Ev[0]=='Ply'){Timer($('#Tempo a'),'play',ToSec(New.Ev[1]),false,e=>{CallBack(New)})}
-    if(New.Ev[0]=='Stp'){Timer($('#Tempo a'),'play',ToSec(New.Ev[1]),false,e=>{CallBack(New)})}
-    if(New.Ev[0]=='End'){Timer($('#Tempo a'),'end' ,ToSec(New.Ev[1]),false,e=>{CallBack(New)})}
+    if(New.Ev[0]=='Ply'){Timer($('#Tempo a'),'Ply',ToSec(New.Ev[1]),false,e=>{CallBack(New)})}
+    if(New.Ev[0]=='Stp'){Timer($('#Tempo a'),'Stp',ToSec(New.Ev[1]),false,e=>{CallBack(New)})}
+    if(New.Ev[0]=='End'){Timer($('#Tempo a'),'End',ToSec(New.Ev[1]),false,e=>{CallBack(New)})}
   }).subscribe()
-  function CallBack(e){LOG('Callnack',e)}  
-  async function getSB(){let {data} = await supabase.from('placar').select('*').eq('id',1).maybeSingle();if(data){Exibir(data)}}
-  getSB()
+  function CallBack(e){/*LOG('Callnack',e)*/}
+  async function iniciar(){
+    let data = await GetSB() ; if(data){Exibir(data,'First')}
+     // depois ver a idéia da Nova Linha pois se eu adicionar uma Nova Linha lá, essa página ainda vai ficar com o ultimo, q seria mais antigo
+  }
+  iniciar()
 </script>
 </html>
