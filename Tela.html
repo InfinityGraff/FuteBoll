@@ -18,7 +18,7 @@
 </head>
 
 <style>
-  :root{--accent:#0ea5e9;--panel:#071b33b2;--panel-2:#102a4a;--glass:#ffffff0a;--muted:#ffffffb3}
+  :root      {--accent:#0ea5e9;--panel:#071b33b2;--panel-2:#102a4a;--glass:#ffffff0a;--muted:#ffffffb3}
   *          {margin:0;padding:0;font-family:Montserrat,system-ui,Arial;font-weight:bold}
   html,body  {height:100%;width:100%}
   body       {padding:2% 3% 3% 3%;background-image:url(./Imgs/Fundo.webp); background-size:100% 100%;background-repeat:no-repeat;background-position:top left}
@@ -47,10 +47,7 @@
   .Evn p{width:40px;text-align:left;color:var(--accent)}
   .Evn b{flex:1;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;text-align:start}
 
-  .gol-anim{z-index:3;position:fixed;top:0;left:0;right:0;bottom:0;background:#16161623;display:flex;justify-content:center;align-items:center;font-size:80px;font-weight:900;color:#28a745;opacity:0;animation:golAnim 7s ease forwards
-    ;text-shadow:0 8px 8px #000000ec
-    ;backdrop-filter: blur(8px)
-  }
+  .gol-anim{z-index:3;position:fixed;top:0;left:0;right:0;bottom:0;background:#16161623;display:flex;justify-content:center;align-items:center;font-size:80px;font-weight:900;color:#28a745;opacity:0;animation:golAnim 7s ease forwards;text-shadow:0 8px 8px #000000ec;backdrop-filter: blur(8px)}
   @keyframes golAnim {0%{opacity:0;transform:scale(0.5)}20%{opacity:1;transform:scale(1.3)}80%{opacity:1;transform:scale(1)}100%{opacity:0;transform:scale(1)}}
 </style>
 
