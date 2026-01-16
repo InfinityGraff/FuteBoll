@@ -12,7 +12,7 @@
     <script> // Base de Dados
       const SUPABASE_URL      = "https://adxigvfxtafvlmpvwwvb.supabase.co"
       const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFkeGlndmZ4dGFmdmxtcHZ3d3ZiIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NTE1Njc1NTEsImV4cCI6MjA2NzE0MzU1MX0.wc90qDuSNhtolJBd4qLEux3xCwJwPuTTFb3gZMKUBYU"
-      const supabase          =  window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY)
+      const Supabase          =  window.supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY)
       const BASE_URL          = `https://adxigvfxtafvlmpvwwvb.supabase.co/storage/v1/object/public/Jogo/Imgs`
     </script>
     <script src="./SupaBASE.js"></script>
@@ -184,9 +184,9 @@
 
   async function UPPImg(file,nome){ // Supabase
     const path = `Imgs/${nome}`
-    const {error} = await supabase.storage.from('Jogo').upload(path,file,{upsert:true})
+    const {error} = await Supabase.storage.from('Jogo').upload(path,file,{upsert:true})
        if (error)  return alert('❌ Erro ao enviar imagem'),null
-    return supabase.storage.from('Jogo').getPublicUrl(path).publicUrl
+    return Supabase.storage.from('Jogo').getPublicUrl(path).publicUrl
   }
 
   async function Configurar(SB){
