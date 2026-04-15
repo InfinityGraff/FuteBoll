@@ -319,17 +319,14 @@ const load_Opts =(e,arr)=>Inn(e,arr.map(a=>`<option value="${a}">${a}</option>`)
 const SrcSVG    =e=>`data:image/svg+xml,${encodeURIComponent(e)}`
 const Tm_Interup=(Eu,v1,v2   )=>{Eu.classList.add("Interup","Rltv","Bt","PT");Eu.addEventListener("click",()=>TOV(Eu)   );Inn(Eu,`<a>${v1}</a><a>${v2}</a><i></i>`)}
 const Tm_Check  =(Eu,Stg,nome)=>{Eu.classList.add("Chek","Ct")               ;Eu.addEventListener("click",()=>SynChk(Eu));Inn(Eu,`<input class="none" type="checkbox"><a class="Ct">${Stg}</a>${nome ? `<p>${nome}</p>` : ''}`)}
-const Tm_Switch =(Eu,Labels=[],Func,Pre)=>{ // <div onload="Tm_Switch(this,['Pedidos','Serviços','Pagamento'],`slideTo(x,'PDDS')`,'PPDS')"></div>
-    const X=Labels.length
-    Eu.classList.add("Switch","Rltv","Ct","PT")
-    Inn(Eu,`<style>${For(X).map(e=>`
-        #opt_${Pre}_${e}:checked ~ i {transform:translateX(${e * 100}%)}
-        #opt_${Pre}_${e}:checked ~ label[for="opt_${Pre}_${e}"] {color:#fff}
-    `).join("")}label[for="opt_${Pre}_0"]{color:#fff}
-    </style>
-    ${For(X).map(e=>`<input type="radio" onchange="${Func.replace('x',e)}" id="opt_${Pre}_${e}" name="mode" class="none" ${e===0?"checked":""}>`).join("")}
-    ${For(X).map(e=>`<label for="opt_${Pre}_${e}">${Labels[e] || "Opção " + e}</label>`).join("")}
-    <i style="width: calc(100%/${X})"></i>`)
+const Tm_Switch =(e,l=[],tg,p,px)=>{
+    e.className+=" Switch Rltv Ct PT"
+    e.innerHTML=`<style>${l.map((_,i)=>`#opt_${p}_${i}:checked~i{transform:translateX(${i*100}%)}#opt_${p}_${i}:checked~label[for="opt_${p}_${i}"]{color:#fff}`).join("")}</style>
+    ${l.map((_,i)=>`<input type=radio name=${p} class="NONE" id=opt_${p}_${i} ${!i?"checked":""}
+    onchange="this.closest('.Switch')._tg.style.transform='translateX(-${i*100}%)'">`).join("")}
+    ${l.map((t,i)=>`<label style="width:${px}" for=opt_${p}_${i}>${t}</label>`).join("")}
+    <i style="width:calc(100%/${l.length})"></i>`
+    e._tg=tg
 }
 function MyAlert(msg){
     if(!document.querySelector('#alertCSS')){
